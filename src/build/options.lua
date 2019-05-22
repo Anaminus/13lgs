@@ -7,7 +7,7 @@ local defaults = {
 	target     = {"string"     , nil},
 
 	define = {"dictionary", {
-		IncludeBridge = false,
+		EnableBridge = false,
 	}},
 	mappings = {"array", {
 		{

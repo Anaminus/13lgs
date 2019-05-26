@@ -7,7 +7,11 @@ local defaults = {
 	target     = {"string"     , nil},
 
 	define = {"dictionary", {
+		ErrorStackFrames = 1,
 		EnableBridge = false,
+		EnableModuleTracking = true,
+		Test = false,
+		Benchmark = false,
 	}},
 	mappings = {"array", {
 		{

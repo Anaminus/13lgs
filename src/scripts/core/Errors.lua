@@ -113,9 +113,10 @@ Core.Interface("Errors.Iser",
 	"Is(error) bool"
 )
 
--- Is traverses the causes of err recursively, and returns whether any of the
--- causes match target. An error matches a target if they are equal, or if the
--- error implements Iser and Is(target) returns true.
+-- Is is used to compare the values of errors in a chain. Is traverses the
+-- causes of err recursively, and returns whether any of the causes match the
+-- target value. An error matches a target if they are equal, or if the error
+-- implements Iser and Is(target) returns true.
 local function Is(err, target)
 	if target == nil then
 		return err == nil
@@ -138,10 +139,11 @@ Core.Interface("Errors.Aser",
 	"As(target string) error"
 )
 
--- As traverses the causes of err recursively, and returns the first error in
--- the chain that matches the target interface, or nil otherwise. An error
--- matches if the error implements the interface, or if it implements Aser such
--- that As(target) returns a non nil value.
+-- As is used to compare the interfaces of errors in a chain. As traverses the
+-- causes of err recursively, and returns the first error in the chain that
+-- matches the target interface, or nil otherwise. An error matches if the error
+-- implements the interface, or if it implements Aser such that As(target)
+-- returns a non nil value.
 local function As(err, target)
 	if target == nil then
 		return nil

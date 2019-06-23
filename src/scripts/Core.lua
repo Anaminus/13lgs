@@ -15,7 +15,7 @@ end
 
 --#if EnableBridge then
 -- Set of APIs that can be accessed by the bridge.
-local bridge = {}
+local Bridge = {}
 --#end
 
 ----------------------------------------------------------------
@@ -160,7 +160,7 @@ do
 	-- Describe returns a description of the interfaces that the given value
 	-- implements. If no value is given, then Describe returns a description of
 	-- all declared interfaces. For humans only.
-	function Core.Describe(...)
+	local function Describe(...)
 		if select("#", ...) == 0 then
 			return formatInterfaces(declaredInterfaces)
 		end
@@ -171,7 +171,7 @@ do
 		return formatInterfaces(is)
 	end
 --#if EnableBridge then
-	bridge.Describe = true
+	Bridge.Describe = Describe
 --#end
 end
 Core.Impl = Impl
@@ -497,13 +497,14 @@ do
 	-- Each event is an array containing the event content. The `n` field is the
 	-- length of the array, the `level` field indicates the severity of the
 	-- event, and the timestamp field indicates when the event was logged.
-	function Core.DrainLogs()
+	local function DrainLogs()
 		local q = queue
 		queue = {}
 		return q
 	end
+	Core.DrainLogs = DrainLogs
 --#if EnableBridge then
-	bridge.DrainLogs = true
+	Bridge.DrainLogs = DrainLogs
 --#end
 end
 
@@ -698,7 +699,7 @@ do
 	--
 	-- Only paths that have been blocking for at least the given duration are
 	-- returned. If the argument is not a number, then all paths are returned.
-	function Core.GetBlockingModules(duration)
+	local function GetBlockingModules(duration)
 		local modules = {}
 		if type(duration) == "number" then
 			local t = elapsedTime()
@@ -716,7 +717,7 @@ do
 		return modules
 	end
 --#if EnableBridge then
-	bridge.GetBlockingModules = true
+	Bridge.GetBlockingModules = GetBlockingModules
 --#end
 end
 
@@ -809,9 +810,10 @@ do
 
 		local bindable = Instance.new("BindableFunction")
 		bindable.Name = "CoreBridge" .. identity
-		function bindable.OnInvoke(func, ...)
-			if bridge[func] then
-				return Core[func](...)
+		function bindable.OnInvoke(name, ...)
+			local func = Bridge[name]
+			if func then
+				return func(...)
 			end
 			error("invalid call", 2)
 		end
